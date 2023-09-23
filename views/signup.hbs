@@ -1,0 +1,65 @@
+<div class="container">
+  <h1 class="text-center mt-5">Sign Up</h1>
+
+  <form action="/signup" method="POST">
+    <div class="d-flex justify-content-center">
+      <div class="col-6 d-flex flex-column">
+        <div class="row mb-3">
+          <label for="name" class="row form-label">姓名</label>
+          <input type="text" name="name" class="form-control" id="name" placeholder="Name" value="{{name}}" required>
+        </div>
+        <div class="row mb-3">
+          <label for="email" class="row form-label">信箱</label>
+          <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{{email}}"  required>
+        </div>
+        <div class="row mb-3">
+          <label for="password" class="row form-label">密碼</label>
+          <input type="password" name="password" class="form-control" id="password" placeholder="password" value="{{password}}"  required>
+        </div>
+        <div class="row mb-3">
+          <label for="confirmPassword" class="row form-label">確認密碼</label>
+          <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="confirmPassword" value="{{confirmPassword}}" required>
+        </div>
+
+        <div class="row mt-2">
+          <button type="submit" class="btn btn-primary">註冊</button>
+        </div>
+        <div class="row mt-2">
+          <a href="/auth/google" class="btn btn-success">Google登入</a>
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+</div>
+
+<!-- AC-U107  -->
+<br>
+<br>
+<div class="mb-4 text-center">
+  <h1 class="h3 font-weight-normal mb-3">Sign Up</h1>
+</div>
+<form class="form-signup" action="/signup" method="POST" style="width: 100%;">
+  <div class="form-row mb-3">
+    <label class="form-label" for="name">Name</label>
+    <input type="text" id="name" name="name" class="form-control" placeholder="Name" required autofocus>
+  </div>
+  <div class="form-row mb-3">
+    <label class="form-label" for="email">Email</label>
+    <input type="text" id="email" name="email" class="form-control" placeholder="Email" required>
+  </div>
+  <div class="form-row mb-3">
+    <label class="form-label" for="password">Password</label>
+    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+  </div>
+  <div class="form-row mb-3">
+    <label class="form-label" for="passwordCheck">Password Check</label>
+    <input type="password" id="passwordCheck" name="passwordCheck" class="form-control" placeholder="Password Check"
+      required>
+  </div>
+  <button class="btn btn-primary btn-block" type="submit">Submit</button>
+</form>
+<div class="mb-4 text-center">
+  <p><a href="/signin">Sign In</a></p>
+</div>

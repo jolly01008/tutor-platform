@@ -1,0 +1,31 @@
+<div class="container">
+  <h1 class="text-center mt-5">Sign In</h1>
+
+  <form action="/signin" method="POST">
+    <div class="d-flex justify-content-center">
+      <div class="col-6 d-flex flex-column">
+
+        <div class="row mb-3">
+          <label for="email" class="row form-label">信箱</label>
+          <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{{email}}" required>
+        </div>
+        <div class="row mb-3">
+          <label for="password" class="row form-label">密碼</label>
+          <input type="password"  name="password" class="form-control" id="password" placeholder="password" value="{{password}}"required>
+        </div>
+
+        <div class="row mt-2">
+          <button type="submit" class="btn btn-primary">登入</button>
+        </div>
+        <div class="row mt-2">
+          <a href="/auth/google" class="btn btn-success">Google登入</a>
+        </div>
+
+      </div>
+    </div>
+  </form>
+  <div class="d-flex justify-content-center mt-5">
+    <p>還沒註冊嗎?</p><a href="/signup">點這邊註冊</a>
+  </div>
+
+</div>
