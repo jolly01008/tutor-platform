@@ -8,16 +8,13 @@ const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
-  signUp: (req, res) => {
+  signUp: (req, res, next) => {
     const { name, email, password, confirmPassword } = req.body
-    if (password !== confirmPassword) throw new Error('Password do not match!')
+    if (password !== confirmPassword) throw new Error('密碼與確認密碼不相符!')
 
     User.findOne({ where: { email } })
       .then(user => {
-        if (user) {
-          res.render('signup', { name, email, password, confirmPassword })
-          throw new Error('Email already exists!')
-        }
+        if (user) throw new Error('這個帳號已經註冊過了!')
         return bcrypt.hash(password, 10)
       })
       .then(hash => User.create({
@@ -25,8 +22,11 @@ const userController = {
         email,
         password: hash
       }))
-      .then(() => res.redirect('/signin'))
-      .catch(err => console.log(err))
+      .then(() => {
+        req.flash('success_msg', '成功註冊帳號，請重新登入')
+        res.redirect('/signin')
+      })
+      .catch(err => next(err))
   }
 }
 
