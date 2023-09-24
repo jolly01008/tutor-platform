@@ -5,6 +5,15 @@ const userController = {
   signInPage: (req, res) => {
     res.render('signin')
   },
+  signIn: (req, res) => {
+    req.flash('success_msg', '成功登入!')
+    res.redirect('/teachers')
+  },
+  logout: (req, res) => {
+    req.flash('success_msg', '登出成功!')
+    req.logout()
+    res.redirect('/signin')
+  },
   signUpPage: (req, res) => {
     res.render('signup')
   },
