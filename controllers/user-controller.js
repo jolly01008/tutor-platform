@@ -6,7 +6,7 @@ const userController = {
     res.render('signin')
   },
   signIn: (req, res) => {
-    req.flash('success_msg', '成功登入!')
+    req.flash('success_msg', '登入成功!')
     res.redirect('/teachers')
   },
   logout: (req, res) => {
