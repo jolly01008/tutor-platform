@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Teacher } = require('../models')
 
 const userController = {
   signInPage: (req, res) => {
@@ -34,6 +34,40 @@ const userController = {
       .then(() => {
         req.flash('success_msg', '成功註冊帳號，請重新登入')
         res.redirect('/signin')
+      })
+      .catch(err => next(err))
+  },
+  getApplyTeacher: (req, res) => {
+    return res.render('users/apply-teacher')
+  },
+  postApplyTeacher: (req, res, next) => {
+    const { introduction, style, during, courseLink, appointmentWeek } = req.body
+    const userId = req.user.id
+    const appointmentWeekString = JSON.stringify(appointmentWeek)
+    Promise.all([
+      User.findByPk(userId, {
+        raw: true,
+        attributes: { exclude: ['password'] }
+      }),
+      Teacher.findOne({ where: { userId } })
+    ])
+      .then(([user, teacher]) => {
+        if (!user) throw new Error('找不到使用者')
+        if (teacher) throw new Error('已申請過老師身份')
+        return Teacher.create({
+          name: user.name,
+          avatar: user.avatar,
+          introduction,
+          style,
+          during,
+          courseLink,
+          appointmentWeek: appointmentWeekString,
+          userId
+        })
+      })
+      .then(() => {
+        req.flash('success_msg', '成功提出申請')
+        return res.redirect(`/teacher/${userId}`)
       })
       .catch(err => next(err))
   }

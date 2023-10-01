@@ -1,0 +1,66 @@
+<h3 class="d-flex justify-content-center mb-2">申請成為老師</h3>
+<div class="container row">
+    <form action="/users/apply" method="POST">
+        <div class="mb-3">
+          <label for="introduction" class="form-label">個人介紹</label>
+          <textarea name="introduction" class="form-control" id="introduction" style="height: 100px" required></textarea>
+        </div>
+        
+        <div class="mb-3">
+          <label for="id" class="form-label">教學風格</label>
+          <textarea name="style" class="form-control" id="style" style="height: 100px" required></textarea>
+        </div>
+        
+        <div class="mb-3">
+          <label for="during" class="form-label">單堂課時間</label>
+          <select class="form-select" name="during" id="during" placeholder="單堂課時間" required>
+            <option value="30mins">30分鐘</option>
+            <option value="60mins">60分鐘</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label for="courseLink" class="form-label">上課視訊連結</label>
+          <input type="text" name="courseLink" class="form-control" id="courseLink" required>
+        </div>
+        
+        <div class="mb-3">
+          <label for="appointment">開放預約</label>
+          <div class="d-flex flex-row">
+            <div class="mb-3 me-4">
+              <input class="form-check-input" type="checkbox" name="appointmentWeek" value="Mon" id="Mon">
+              <label class="form-check-label" for="Mon">星期一</label>
+            </div>
+            <div class="mb-3 mx-4">
+              <input class="form-check-input" type="checkbox" name="appointmentWeek" value="Tue" id="Tue">
+              <label class="form-check-label" for="Tue">星期二</label>
+            </div>
+            <div class="mb-3 mx-4">
+              <input class="form-check-input" type="checkbox" name="appointmentWeek" value="Wed" id="Wed">
+              <label class="form-check-label" for="Wed">星期三</label>
+            </div>
+            <div class="mb-3 mx-4">
+              <input class="form-check-input" type="checkbox" name="appointmentWeekr" value="Thur" id="Thur">
+              <label class="form-check-label" for="Thur">星期四</label>
+            </div>
+            <div class="mb-3 mx-4">
+              <input class="form-check-input" type="checkbox" name="appointmentWeek" value="Fri" id="Fri">
+              <label class="form-check-label" for="Fri">星期五</label>
+            </div>
+            <div class="mb-3 mx-4">
+              <input class="form-check-input" type="checkbox" name="appointmentWeek" value="Sat" id="Sat">
+              <label class="form-check-label" for="Sat">星期六</label>
+            </div>
+            <div class="mb-3 mx-4">
+              <input class="form-check-input" type="checkbox" name="appointmentWeek" value="Sun" id="Sun">
+              <label class="form-check-label" for="Sun">星期日</label>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <button type="submit" class="mt-2 btn btn-primary">提出申請</button>
+        </div>
+    </form>
+    
+</div>
+  
