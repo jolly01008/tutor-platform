@@ -1,9 +1,13 @@
 <div class="container">
-  <div class="row d-flex mt-3">
+  <div class="row mt-3">
     <div class="col-md-9" id="search-and-teachers">
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="搜尋老師" aria-label="TeacherName" aria-describedby="basic-addon1">
-      </div>
+        <form action="/teachers/search">
+          <div class="input-group mb-3">
+            <input value="{{keyword}}" name="keyword" type="text" class="form-control" placeholder="輸入關鍵字" aria-label="keyword">
+            <button class="btn btn-outline-secondary" type="submit">搜尋老師</button>
+          </div>
+        </form>
+
       <div class="row" id="teacher-info">
 
         {{#each teachers}}
@@ -25,21 +29,18 @@
       </div>
     </div>
     
-    <div class="col-md-3" id="charts">
+    <div class="col-md-3">
       <div class="card px-2">
         <div class="card-body">
 
-          <h5 class="text-center mb-3"><strong>時數學習排行</strong></h5>
-          <div class="d-flex flex-row align-items-center mb-2">
-            <img src="https://cdn-icons-png.flaticon.com/512/3171/3171065.png" class="card-img-top me-3" alt="user"
-              style="width: 4rem">
-            <h5>UserName</h5>
+          <h5 class="text-center mb-4"><strong>學習時數排行</strong></h5>
+          {{#each topLearnUsers}}
+          <div class="d-flex flex-row align-items-center mb-4">
+            <img src={{this.User.avatar}} class="card-img-top me-3" alt="user"
+              style="width: 3rem">
+            <h6>{{this.User.name}}</h6>
           </div>
-          <div class="d-flex flex-row align-items-center mb-2">
-            <img src="https://cdn-icons-png.flaticon.com/512/3171/3171065.png" class="card-img-top me-3" alt="user"
-              style="width: 4rem">
-            <h5>UserName</h5>
-          </div>
+          {{/each}}
 
         </div>
       </div>

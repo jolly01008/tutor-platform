@@ -31,7 +31,7 @@ module.exports = {
     users[0].forEach((user, i) => {
       Array.from({ length: 2 })
         .map((_, j) => {
-          const randomTeacherNum = Math.floor(Math.random() * teachers.length)
+          const randomTeacherNum = Math.floor(Math.random() * teachers[0].length)
 
           return courses.push({
             course_time: getRandomPastTime(),

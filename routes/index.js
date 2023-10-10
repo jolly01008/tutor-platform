@@ -17,6 +17,7 @@ router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/logout', userController.logout)
 
+router.get('/teachers/search', authenticated, courseController.getSearchTeachers)
 router.get('/users/apply', authenticated, userController.getApplyTeacher)
 router.post('/users/apply', authenticated, userController.postApplyTeacher)
 router.get('/teachers', authenticated, courseController.getTeachers)
