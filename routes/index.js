@@ -17,12 +17,16 @@ router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/logout', userController.logout)
 
-router.get('/teachers/search', authenticated, courseController.getSearchTeachers)
-router.get('/users/apply', authenticated, userController.getApplyTeacher)
-router.post('/users/apply', authenticated, userController.postApplyTeacher)
-router.get('/teachers', authenticated, courseController.getTeachers)
+router.get('/users/:id/edit', authenticated, userController.getEditUser)
+router.get('/users/:id/apply', authenticated, userController.getApplyTeacher)
+router.post('/users/:id/apply', authenticated, userController.postApplyTeacher)
+router.get('/users/:id', authenticated, userController.getUser)
 
+router.get('/teachers/search', authenticated, courseController.getSearchTeachers)
+router.get('/teachers/:id', authenticated, courseController.getTeacher)
 router.get('/teacher/:id', authenticated, teacherController.getTeacherInfo)
+
+router.get('/teachers', authenticated, courseController.getTeachers)
 
 router.use('/', (req, res) => res.redirect('/teachers'))
 router.use('/', generalErrorHandler)

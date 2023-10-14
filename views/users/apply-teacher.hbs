@@ -1,6 +1,6 @@
 <h3 class="d-flex justify-content-center mb-2">申請成為老師</h3>
 <div class="container row">
-    <form action="/users/apply" method="POST">
+    <form action="/users/{{user.id}}/apply" method="POST">
         <div class="mb-3">
           <label for="introduction" class="form-label">個人介紹</label>
           <textarea name="introduction" class="form-control" id="introduction" style="height: 100px" required></textarea>
@@ -40,7 +40,7 @@
               <label class="form-check-label" for="Wed">星期三</label>
             </div>
             <div class="mb-3 mx-4">
-              <input class="form-check-input" type="checkbox" name="appointmentWeekr" value="4" id="Thur">
+              <input class="form-check-input" type="checkbox" name="appointmentWeek" value="4" id="Thur">
               <label class="form-check-label" for="Thur">星期四</label>
             </div>
             <div class="mb-3 mx-4">

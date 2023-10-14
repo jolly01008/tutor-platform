@@ -67,6 +67,9 @@ const courseController = {
         return res.render('index', { teachers: searchTeachers, keyword, topLearnUsers })
       })
       .catch(err => next(err))
+  },
+  getTeacher: (req, res) => {
+    res.render('users/teacher')
   }
 }
 

@@ -37,6 +37,12 @@ const userController = {
       })
       .catch(err => next(err))
   },
+  getUser: (req, res) => {
+    res.render('users/user-profile')
+  },
+  getEditUser: (req, res) => {
+    res.render('users/edit-user')
+  },
   getApplyTeacher: (req, res) => {
     return res.render('users/apply-teacher')
   },
@@ -45,18 +51,12 @@ const userController = {
     const userId = req.user.id
     const appointmentWeekString = JSON.stringify(appointmentWeek)
     Promise.all([
-      User.findByPk(userId, {
-        raw: true,
-        attributes: { exclude: ['password'] }
-      }),
-      Teacher.findOne({ where: { userId } })
+      User.findByPk(userId, { raw: true, attributes: { exclude: ['password']} })
     ])
-      .then(([user, teacher]) => {
-        if (!user) throw new Error('找不到使用者')
-        if (teacher) throw new Error('已申請過老師身份')
+      .then(([rawUser]) => {
         return Teacher.create({
-          name: user.name,
-          avatar: user.avatar,
+          name: rawUser.name,
+          avatar: rawUser.avatar,
           introduction,
           style,
           during,
@@ -64,6 +64,16 @@ const userController = {
           appointmentWeek: appointmentWeekString,
           userId
         })
+      })
+      .catch(err => next(err))
+    Promise.all([
+      User.findByPk(userId, { attributes: { exclude: ['password'] } }),
+      Teacher.findOne({ where: { userId } })
+    ])
+      .then(([user, teacher]) => {
+        if (!user) throw new Error('找不到使用者')
+        if (teacher) throw new Error('已申請過老師身份')
+        return user.update({ isTeacher: '1' })
       })
       .then(() => {
         req.flash('success_msg', '成功提出申請')
