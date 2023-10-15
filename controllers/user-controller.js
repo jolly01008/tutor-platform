@@ -1,5 +1,8 @@
 const bcrypt = require('bcryptjs')
-const { User, Teacher } = require('../models')
+const { User, Teacher, Course } = require('../models')
+const sequelize = require('sequelize')
+const dayjs = require('dayjs')
+const { myRank } = require('../helpers/rank-helpers')
 
 const userController = {
   signInPage: (req, res) => {
@@ -38,7 +41,48 @@ const userController = {
       .catch(err => next(err))
   },
   getUser: (req, res) => {
-    res.render('users/user-profile')
+    Promise.all([
+      User.findByPk(req.user.id, {
+        raw: true
+      }),
+      Course.findAll({
+        raw: true,
+        nest: true,
+        where: { userId: req.user.id },
+        include: [{
+          model: Teacher,
+          attributes: ['name', 'courseLink', 'avatar', 'id']
+        }]
+      }),
+      Course.findAll({
+        raw: true,
+        nest: true,
+        where: { isDone: true },
+        include: [{ model: User, attributes: ['name', 'avatar'] }],
+        attributes: [
+          'userId',
+          [sequelize.fn('sum', sequelize.col('during')), 'total']
+        ],
+        group: ['userId'],
+        order: [
+          [sequelize.fn('sum', sequelize.col('during')), 'DESC']
+        ]
+      })
+    ])
+      .then(([user, courses, allRanks]) => {
+        const pastCourses = courses.filter(course => {
+          return new Date(course.courseTime) < new Date()
+        })
+
+        const futureCourses = courses.filter(course => {
+          return new Date(course.courseTime) >= new Date()
+        }).map(course => {
+          course.courseTime = dayjs(course.courseTime).format('YYYY/MM/DD HH:mm')
+          return course
+        })
+        const myRankData = myRank(req.user.id, allRanks)
+        res.render('users/user-profile', { user, pastCourses, futureCourses, myRankData})
+      })
   },
   getEditUser: (req, res) => {
     res.render('users/edit-user')
@@ -51,7 +95,7 @@ const userController = {
     const userId = req.user.id
     const appointmentWeekString = JSON.stringify(appointmentWeek)
     Promise.all([
-      User.findByPk(userId, { raw: true, attributes: { exclude: ['password']} })
+      User.findByPk(userId, { raw: true, attributes: { exclude: ['password'] } })
     ])
       .then(([rawUser]) => {
         return Teacher.create({

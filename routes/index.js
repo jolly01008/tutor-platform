@@ -5,6 +5,7 @@ const admin = require('./modules/admin')
 const courseController = require('../controllers/course-controller')
 const userController = require('../controllers/user-controller')
 const teacherController = require('../controllers/teacher-controller')
+const scoreController = require('../controllers/score-controller')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const { authenticated } = require('../middleware/auth')
@@ -27,6 +28,8 @@ router.get('/teachers/:id', authenticated, courseController.getTeacher)
 router.get('/teacher/:id', authenticated, teacherController.getTeacherInfo)
 
 router.get('/teachers', authenticated, courseController.getTeachers)
+
+router.post('/scores', authenticated, scoreController.postScore)
 
 router.use('/', (req, res) => res.redirect('/teachers'))
 router.use('/', generalErrorHandler)
