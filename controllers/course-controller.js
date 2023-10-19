@@ -1,5 +1,14 @@
-const { Teacher, User, Course } = require('../models')
+const { Teacher, User, Course, Score } = require('../models')
 const sequelize = require('sequelize')
+const dayjs = require('dayjs')
+const utc = require('dayjs/plugin/utc') // 導入UTC插件
+dayjs.extend(utc) // 擴展Day.js，啟用 UTC插件。utc是要解決時區問題
+
+const CAN_BOOK_DAYS = 14
+const CLASS_TIME = {
+  START: 18,
+  END: 22
+}
 
 const courseController = {
   getTeachers: (req, res, next) => {
@@ -56,7 +65,7 @@ const courseController = {
           return {
             ...teacher,
             name: teacher.name.toLowerCase(),
-            introduction: teacher.introduction.toLowerCase(),
+            introduction: teacher.introduction.toLowerCase()
           }
         })
         // 篩選符合條件的關鍵字
@@ -68,8 +77,69 @@ const courseController = {
       })
       .catch(err => next(err))
   },
-  getTeacher: (req, res) => {
-    res.render('users/teacher')
+  getTeacher: (req, res, next) => {
+    const teacherId = req.params.id
+    Promise.all([
+      Teacher.findByPk(teacherId, {
+        raw: true,
+        nest: true
+      }),
+      Score.findAll({
+        raw: true,
+        where: { teacherId }
+      }),
+      Score.findAll({
+        raw: true,
+        where: { teacherId },
+        attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'avgRating']]
+      }),
+      Course.findAll({
+        raw: true,
+        where: { teacherId }
+      })
+    ])
+      .then(([teacher, score, avgScore, courses]) => {
+        // 平均分數
+        avgScore = avgScore[0].avgRating.toFixed(1)
+
+        // 顯示能預約的課程時間
+        let availableWeekdays = teacher.appointmentWeek ? JSON.parse(teacher.appointmentWeek) : null
+        if (!Array.isArray(availableWeekdays)) { availableWeekdays = [availableWeekdays] }
+        // 將availableWeekdays轉成數字並排序
+        availableWeekdays = availableWeekdays.map(day => Number(day)).sort((a, b) => a - b)
+        // 取得老師的during
+        const during = Number(teacher.during)
+        // 取得已經預約好的課程之時間，用dayjs套件讓時間變成 mm-dd hh:mm ; utc()是解決時區問題
+        const bookedCourseTime = courses.filter(course => course.courseTime > Date.now())
+          .map(course => dayjs(course.courseTime).utc().format('YYYY-MM-DD HH:mm'))
+        // 以availableWeekdays拿到未來兩周可預約的18:00~22:00之時間
+        const availableTimes = []
+        // 今天星期幾
+        const todayWeekday = dayjs().day()
+
+        for (let day = 0; day < CAN_BOOK_DAYS; day++) {
+          // 今天星期幾+0~14(未來兩周)，並除以7的餘數(一周7天，7為一個循環)，會得到0~6，代表weekday，也就是星期幾
+          const weekday = (todayWeekday + day) % 7
+          // 判斷availableWeekdays有無包含weekday
+          // 若有，則列出該"星期幾"，during為30、60的課程。包括星期幾 (add()幾天後)、幾時、幾分
+          if (availableWeekdays.includes(weekday)) {
+            for (let j = CLASS_TIME.START; j < CLASS_TIME.END; j++) {
+              if (during === 30) {
+                availableTimes.push(dayjs().add(day, 'day').hour(j).minute(0).format('YYYY-MM-DD HH:mm'))
+                availableTimes.push(dayjs().add(day, 'day').hour(j).minute(30).format('YYYY-MM-DD HH:mm'))
+              }
+              if (during === 60) {
+                availableTimes.push(dayjs().add(day, 'day').hour(j).minute(0).format('YYYY-MM-DD HH:mm'))
+              }
+            }
+          }
+        }
+        // 用availableTimes扣去bookedClassesTime，已經預約過的課程不用再顯示出來
+        const availableTimesAfterBooked = availableTimes.filter(availableTime => !bookedCourseTime.includes(availableTime))
+
+        res.render('users/teacher', { teacher, score, avgScore, availableTimesAfterBooked })
+      })
+      .catch(err => next(err))
   }
 }
 
