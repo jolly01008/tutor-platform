@@ -38,22 +38,56 @@
 
     <div class="col-md">
       <h5 class="mb-3">預約課程</h5>
+      <form action="/teachers/{{teacher.id}}/appointmentCourse" method="POST">
       <div class="col-md">
-        {{!-- <select class="form-select" id="floatingSelectGrid">
-          <option selected>選擇預約的時間</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select> --}}
-        <select class="form-select" id="floatingSelectGrid">
-          <option selected>選擇預約的時間</option>
-          {{#each availableTimesAfterBooked}}
-          <option value="1">{{this}}</option>
-          {{/each}}
-        </select>
+          <select name="appointmentTime" class="form-select" id="selectElement">
+            <option selected>選擇預約的時間</option>
+            {{#each availableTimesAfterBooked}}
+            <option value="{{this}}">{{this}}</option>
+            {{/each}}
+          </select>
       </div>
-      <a href="" class=" mt-4 btn btn-primary" style="width: 10rem">Submit</a>
+      <!-- Button trigger modal -->
+      <button type="submit" class=" mt-4 btn btn-primary" style="width: 10rem"
+        data-bs-toggle="modal" data-bs-target="#appointmenteModal">送出預約</button>
+      </form>
     </div>
 
   </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="appointmenteModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5 mx-auto" id="ModalLabel">預約成功!</h1>
+      </div>
+      <div class="modal-body mx-auto">
+        <p>課程老師: {{teacher.name}}</p>
+        <p>課程連結: {{teacher.courseLink}}</p>
+        <p id="appointmentDateText"></p>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeButton">關閉</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  const selectElement = document.getElementById('selectElement')
+  const appointmentDateText = document.getElementById('appointmentDateText')
+  const closeButton = document.getElementById('closeButton')
+  selectElement.addEventListener('change', function () {
+    const selectedDate = this.value
+    appointmentDateText.textContent = `課程時間: ${selectedDate}`;
+  });
+  
+  // 當點擊關閉按鈕，重新整理頁面
+  closeButton.addEventListener('click', function () {
+      location.reload();
+    })
+</script>
+

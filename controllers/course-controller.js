@@ -1,8 +1,6 @@
 const { Teacher, User, Course, Score } = require('../models')
 const sequelize = require('sequelize')
 const dayjs = require('dayjs')
-const utc = require('dayjs/plugin/utc') // 導入UTC插件
-dayjs.extend(utc) // 擴展Day.js，啟用 UTC插件。utc是要解決時區問題
 
 const CAN_BOOK_DAYS = 14
 const CLASS_TIME = {
@@ -111,7 +109,7 @@ const courseController = {
         const during = Number(teacher.during)
         // 取得已經預約好的課程之時間，用dayjs套件讓時間變成 mm-dd hh:mm ; utc()是解決時區問題
         const bookedCourseTime = courses.filter(course => course.courseTime > Date.now())
-          .map(course => dayjs(course.courseTime).utc().format('YYYY-MM-DD HH:mm'))
+          .map(course => dayjs(course.courseTime).format('YYYY-MM-DD HH:mm'))
         // 以availableWeekdays拿到未來兩周可預約的18:00~22:00之時間
         const availableTimes = []
         // 今天星期幾
@@ -138,6 +136,32 @@ const courseController = {
         const availableTimesAfterBooked = availableTimes.filter(availableTime => !bookedCourseTime.includes(availableTime))
 
         res.render('users/teacher', { teacher, score, avgScore, availableTimesAfterBooked })
+      })
+      .catch(err => next(err))
+  },
+  appointmentCourse: (req, res, next) => {
+    const { appointmentTime } = req.body
+    const teacherId = req.params.teacherId
+    const userId = req.user.id
+    if (!dayjs(appointmentTime).isValid()) throw new Error('請選擇想預約的日期！')
+    if (userId === teacherId) throw new Error('不能預約自己的課程')
+    return Promise.all([
+      Teacher.findByPk(teacherId, {
+        raw: true
+      }),
+      Course.findOne({
+        where: { courseTime: appointmentTime, teacherId }
+      })
+    ])
+      .then(([teacher, appointmentedCourse]) => {
+        if (appointmentedCourse) throw new Error('這個課程已經被預約過了!')
+        const during = teacher.during
+        return Course.create({
+          courseTime: appointmentTime,
+          teacherId,
+          userId,
+          during
+        })
       })
       .catch(err => next(err))
   }
