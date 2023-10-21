@@ -144,10 +144,14 @@ const courseController = {
     const teacherId = req.params.teacherId
     const userId = req.user.id
     if (!dayjs(appointmentTime).isValid()) throw new Error('請選擇想預約的日期！')
-    if (userId === teacherId) throw new Error('不能預約自己的課程')
     return Promise.all([
       Teacher.findByPk(teacherId, {
-        raw: true
+        raw: true,
+        nest: true,
+        include: [{
+          model: User,
+          attributes: ['id']
+        }]
       }),
       Course.findOne({
         where: { courseTime: appointmentTime, teacherId }
@@ -155,6 +159,7 @@ const courseController = {
     ])
       .then(([teacher, appointmentedCourse]) => {
         if (appointmentedCourse) throw new Error('這個課程已經被預約過了!')
+        if (userId === teacher.User.id) throw new Error('不能預約自己的課程')
         const during = teacher.during
         return Course.create({
           courseTime: appointmentTime,
