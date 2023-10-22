@@ -51,7 +51,22 @@ const teacherController = {
       .catch(err => next(err))
   },
   getTeacherEdit: (req, res, next) => {
-    res.render('teachers/edit-teacher')
+    const userId = req.user.id
+    if (userId !== Number(req.params.id)) throw new Error('沒有權限！')
+    Promise.all([
+      Teacher.findOne({
+        raw: true,
+        where: { userId }
+      })
+    ])
+      .then(([teacher]) => {
+        const appointmentDays = JSON.parse(teacher.appointmentWeek)
+        res.render('teachers/edit-teacher', { teacher, appointmentDays })
+      })
+      .catch(err => next(err))
+  },
+  editTeacher: (req, res, next) => {
+
   }
 }
 
