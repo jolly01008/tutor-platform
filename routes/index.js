@@ -19,6 +19,7 @@ router.post('/signup', userController.signUp)
 router.get('/logout', userController.logout)
 
 router.get('/users/:id/edit', authenticated, userController.getEditUser)
+router.put('/users/:id/edit', authenticated, userController.putUser)
 router.get('/users/:id/apply', authenticated, userController.getApplyTeacher)
 router.post('/users/:id/apply', authenticated, userController.postApplyTeacher)
 router.get('/users/:id', authenticated, userController.getUser)

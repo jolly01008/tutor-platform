@@ -32,7 +32,8 @@ const userController = {
       .then(hash => User.create({
         name,
         email,
-        password: hash
+        password: hash,
+        avatar: 'https://cdn-icons-png.flaticon.com/512/3171/3171065.png'
       }))
       .then(() => {
         req.flash('success_msg', '成功註冊帳號，請重新登入')
@@ -81,11 +82,42 @@ const userController = {
           return course
         })
         const myRankData = myRank(req.user.id, allRanks)
-        res.render('users/user-profile', { user, pastCourses, futureCourses, myRankData})
+        res.render('users/user-profile', { user, pastCourses, futureCourses, myRankData })
       })
   },
-  getEditUser: (req, res) => {
-    res.render('users/edit-user')
+  getEditUser: (req, res, next) => {
+    const userId = req.user.id
+    if (userId !== Number(req.params.id)) throw new Error('沒有權限')
+    Promise.all([
+      User.findByPk(userId, {
+        raw: true,
+        attributes: { exclude: ['password'] }
+      })
+    ])
+      .then(([user]) => {
+        if (!user) throw new Error('找不到使用者！')
+        return res.render('users/edit-user', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const userId = req.user.id
+    const { name, nation, avatar, introduction } = req.body
+    if (userId !== Number(req.params.id)) throw new Error('沒有權限')
+    if (!name || !nation || !avatar || !introduction) throw new Error('請填寫所有欄位!')
+    Promise.all([
+      User.findByPk(userId, { attributes: { exclude: ['password'] } })
+    ])
+      .then(([user]) => {
+        return user.update({
+          name, nation, avatar, introduction
+        })
+      })
+      .then(() => {
+        req.flash('success_msg', '修改資料成功!')
+        res.redirect(`/users/${userId}`)
+      })
+      .catch(err => next(err))
   },
   getApplyTeacher: (req, res) => {
     return res.render('users/apply-teacher')

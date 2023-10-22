@@ -1,1 +1,26 @@
-<h1>EDIT USER PAGE</h1>
+<h3 class="d-flex justify-content-center mb-2">編輯個人資料</h3>
+<div class="container row">
+  <form action="/users/{{user.id}}/edit?_method=PUT" method="POST">
+    <div class="mb-3">
+      <label for="name" class="form-label">名字</label>
+      <input name="name" class="form-control" id="name" value="{{user.name}}" required></input>
+    </div>
+    <div class="mb-3">
+      <label for="nation" class="form-label">國家</label>
+      <input name="nation" class="form-control" id="nation" value="{{user.nation}}" required></input>
+    </div>
+    <div class="mb-3">
+      <label for="avatar" class="form-label">個人頭貼</label>
+      <input name="avatar" class="form-control" id="avatar" value="{{user.avatar}}" required></input>
+    </div>
+    <div class="mb-3">
+      <label for="introduction" class="form-label">個人介紹</label>
+      <textarea name="introduction" class="form-control" id="introduction" style="height: 100px"
+        required>{{user.introduction}}</textarea>
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="mt-2 btn btn-primary">送出修改資料</button>
+    </div>
+  </form>
+
+</div>
