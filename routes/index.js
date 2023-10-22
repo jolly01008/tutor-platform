@@ -27,6 +27,7 @@ router.get('/teachers/search', authenticated, courseController.getSearchTeachers
 router.post('/teachers/:teacherId/appointmentCourse', authenticated, courseController.appointmentCourse)
 router.get('/teachers/:id', authenticated, courseController.getTeacher)
 router.get('/teacher/:id/edit', authenticated, teacherController.getTeacherEdit)
+router.put('/teacher/:id/edit', authenticated, teacherController.putTeacher)
 router.get('/teacher/:id', authenticated, teacherController.getTeacherInfo)
 
 router.get('/teachers', authenticated, courseController.getTeachers)

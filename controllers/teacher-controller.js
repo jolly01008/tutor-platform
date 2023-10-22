@@ -65,8 +65,31 @@ const teacherController = {
       })
       .catch(err => next(err))
   },
-  editTeacher: (req, res, next) => {
-
+  putTeacher: (req, res, next) => {
+    const userId = req.user.id
+    const { name, avatar, introduction, style, during, courseLink } = req.body
+    const appointmentWeekString = req.body.appointmentWeek ? JSON.stringify(req.body.appointmentWeek) : null
+    if (userId !== Number(req.params.id)) throw new Error('沒有權限!')
+    if (!name || !avatar || !introduction || !style || !during || !courseLink || !courseLink || !appointmentWeekString) throw new Error('請填寫所有欄位！')
+    Promise.all([
+      Teacher.findOne({ where: { userId } })
+    ])
+      .then(([teacher]) => {
+        teacher.update({
+          name,
+          avatar,
+          introduction,
+          style,
+          during,
+          courseLink,
+          appointmentWeek: appointmentWeekString
+        })
+      })
+      .then(() => {
+        req.flash('success_msg', '資料修改完成!')
+        res.redirect(`/teacher/${userId}`)
+      })
+      .catch(err => next(err))
   }
 }
 

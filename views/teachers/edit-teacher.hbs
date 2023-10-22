@@ -1,6 +1,6 @@
 <h3 class="d-flex justify-content-center mb-2">編輯課程資訊與時間</h3>
 <div class="container row">
-  <form action="/users/{{user.id}}/edit" method="POST">
+  <form action="/teacher/{{user.id}}/edit?_method=PUT" method="POST">
     <div class="mb-3">
       <label for="name" class="form-label">名字</label>
       <input name="name" class="form-control" id="name" value="{{teacher.name}}" required></input>
