@@ -1,6 +1,7 @@
 const { Teacher, User, Course, Score } = require('../models/')
 const sequelize = require('sequelize')
 const dayjs = require('dayjs')
+const { localFileHandler } = require('../helpers/file-helper')
 
 const teacherController = {
   getTeacherInfo: (req, res, next) => {
@@ -67,17 +68,19 @@ const teacherController = {
   },
   putTeacher: (req, res, next) => {
     const userId = req.user.id
-    const { name, avatar, introduction, style, during, courseLink } = req.body
+    const { name, introduction, style, during, courseLink } = req.body
     const appointmentWeekString = req.body.appointmentWeek ? JSON.stringify(req.body.appointmentWeek) : null
     if (userId !== Number(req.params.id)) throw new Error('沒有權限!')
-    if (!name || !avatar || !introduction || !style || !during || !courseLink || !courseLink || !appointmentWeekString) throw new Error('請填寫所有欄位！')
+    if (!name || !introduction || !style || !during || !courseLink || !courseLink || !appointmentWeekString) throw new Error('請填寫所有欄位！')
+    const { file } = req // request中的檔案(圖片)取出來
     Promise.all([
-      Teacher.findOne({ where: { userId } })
+      Teacher.findOne({ where: { userId } }),
+      localFileHandler(file)
     ])
-      .then(([teacher]) => {
-        teacher.update({
+      .then(([teacher, filePath]) => {
+        return teacher.update({
           name,
-          avatar,
+          avatar: filePath || teacher.avatar,
           introduction,
           style,
           during,

@@ -3,6 +3,7 @@ const { User, Teacher, Course } = require('../models')
 const sequelize = require('sequelize')
 const dayjs = require('dayjs')
 const { myRank } = require('../helpers/rank-helpers')
+const { localFileHandler } = require('../helpers/file-helper')
 
 const userController = {
   signInPage: (req, res) => {
@@ -102,15 +103,20 @@ const userController = {
   },
   putUser: (req, res, next) => {
     const userId = req.user.id
-    const { name, nation, avatar, introduction } = req.body
+    const { name, nation, introduction } = req.body
     if (userId !== Number(req.params.id)) throw new Error('沒有權限')
-    if (!name || !nation || !avatar || !introduction) throw new Error('請填寫所有欄位!')
+    if (!name || !nation || !introduction) throw new Error('請填寫所有欄位!')
+    const { file } = req // request中的檔案(圖片)取出來
     Promise.all([
-      User.findByPk(userId, { attributes: { exclude: ['password'] } })
+      User.findByPk(userId, { attributes: { exclude: ['password'] } }),
+      localFileHandler(file) // 取出的檔案傳給file-helper處理後
     ])
-      .then(([user]) => {
+      .then(([user, filePath]) => {
         return user.update({
-          name, nation, avatar, introduction
+          name,
+          nation,
+          introduction,
+          avatar: filePath || user.avatar
         })
       })
       .then(() => {

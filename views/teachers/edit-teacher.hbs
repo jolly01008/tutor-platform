@@ -1,13 +1,17 @@
 <h3 class="d-flex justify-content-center mb-2">編輯課程資訊與時間</h3>
 <div class="container row">
-  <form action="/teacher/{{user.id}}/edit?_method=PUT" method="POST">
+  <form action="/teacher/{{user.id}}/edit?_method=PUT" method="POST" enctype="multipart/form-data">
     <div class="mb-3">
       <label for="name" class="form-label">名字</label>
       <input name="name" class="form-control" id="name" value="{{teacher.name}}" required></input>
     </div>
-    <div class="mb-3">
+    {{!-- <div class="mb-3">
       <label for="avatar" class="form-label">個人頭貼</label>
       <input name="avatar" class="form-control" id="avatar" value="{{teacher.avatar}}" required></input>
+    </div> --}}
+    <div class="mb-3">
+      <label for="avatar" class="form-label">個人頭貼</label>
+      <input type="file" name="avatar" class="form-control" id="avatar" value="{{teacher.avatar}}"></input>
     </div>
     <div class="mb-3">
       <label for="introduction" class="form-label">個人介紹</label>

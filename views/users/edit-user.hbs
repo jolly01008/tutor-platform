@@ -1,6 +1,6 @@
 <h3 class="d-flex justify-content-center mb-2">編輯個人資料</h3>
 <div class="container row">
-  <form action="/users/{{user.id}}/edit?_method=PUT" method="POST">
+  <form action="/users/{{user.id}}/edit?_method=PUT" method="POST" enctype="multipart/form-data">
     <div class="mb-3">
       <label for="name" class="form-label">名字</label>
       <input name="name" class="form-control" id="name" value="{{user.name}}" required></input>
@@ -11,7 +11,7 @@
     </div>
     <div class="mb-3">
       <label for="avatar" class="form-label">個人頭貼</label>
-      <input name="avatar" class="form-control" id="avatar" value="{{user.avatar}}" required></input>
+      <input type="file" name="avatar" class="form-control" id="avatar" value="{{user.avatar}}"></input>
     </div>
     <div class="mb-3">
       <label for="introduction" class="form-label">個人介紹</label>
