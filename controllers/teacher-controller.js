@@ -5,12 +5,13 @@ const { localFileHandler } = require('../helpers/file-helper')
 
 const teacherController = {
   getTeacherInfo: (req, res, next) => {
-    const teacherId = req.params.id
+    const userId = req.user.id
+    if (userId !== Number(req.params.id)) throw new Error('沒有權限!')
     Promise.all([
       Teacher.findOne({
         raw: true,
         nest: true,
-        where: { userId: req.user.id },
+        where: { userId },
         include: [{
           model: User,
           attributes: { exclude: ['password'] }
@@ -19,13 +20,13 @@ const teacherController = {
       Score.findAll({
         raw: true,
         nest: true,
-        where: { teacherId },
+        where: { teacherId: req.params.id },
         attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'avgRating']]
       }),
       Course.findAll({
         raw: true,
         nest: true,
-        where: { teacherId },
+        where: { teacherId: req.params.id },
         include: [
           { model: Teacher, attributes: ['courseLink'] },
           { model: User, attributes: ['name'] }]
@@ -33,12 +34,12 @@ const teacherController = {
       Score.findAll({
         raw: true,
         nest: true,
-        where: { teacherId },
+        where: { teacherId: req.params.id },
         order: [['rating', 'DESC']]
       })
     ])
       .then(([teacher, avgScore, courses, scores]) => {
-        const teacherAvgScore = avgScore[0].avgRating.toFixed(1)
+        const teacherAvgScore = avgScore[0].avgRating == null ? '目前沒有評分' : avgScore[0].avgRating.toFixed(1)
         const futureCourses = courses
           .filter(course => {
             return course.courseTime > new Date()
