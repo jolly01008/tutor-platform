@@ -12,7 +12,7 @@ const routes = require('./routes/index')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 const SESSION_SECRET = process.env.SESSION_SECRET
 
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs', helpers: handlebarsHelpers }))

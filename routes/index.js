@@ -34,7 +34,7 @@ router.get('/teacher/:id', authenticated, teacherController.getTeacherInfo)
 
 router.get('/teachers', authenticated, courseController.getTeachers)
 
-router.post('/scores', authenticated, scoreController.postScore)
+router.post('/score/:teacherId', authenticated, scoreController.postScore)
 
 router.use('/', (req, res) => res.redirect('/teachers'))
 router.use('/', generalErrorHandler)
