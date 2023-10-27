@@ -75,7 +75,6 @@ const userController = {
         const pastCourses = courses.filter(course => {
           return new Date(course.courseTime) < new Date()
         })
-
         const futureCourses = courses.filter(course => {
           return new Date(course.courseTime) >= new Date()
         }).map(course => {

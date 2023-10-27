@@ -3,26 +3,29 @@ const { Course, Score, Teacher } = require('../models')
 const scoreController = {
   postScore: (req, res, next) => {
     const userId = req.user.id
-    const teacherId = req.params.teacherId // 取得路由中的teacherId(使用者點擊的老師)
     const { rating, comment } = req.body
     Promise.all([
       Course.findAll({
         raw: true,
         nest: true,
-        where: { userId: req.user.id, isDone: true},
+        where: { userId: req.user.id, isRated: false, id: req.params.courseId },
         include: {
           model: Teacher,
           attributes: ['id']
         }
+      }),
+      Course.findAll({
+        where: { userId: req.user.id, isRated: false, id: req.params.courseId }
       })
     ])
-      .then(([course]) => {
+      .then(([course, ratedCourse]) => {
         if (!course) throw new Error('沒有這個課程')
         if (!rating || !comment) throw new Error('評分與評論都要填寫!')
+        ratedCourse[0].update({ isRated: true })
         const result = Score.create({
           rating,
           comment,
-          teacherId,
+          teacherId: course[0].Teacher.id,
           userId
         })
         return result

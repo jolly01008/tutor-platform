@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     during: DataTypes.STRING,
     teacherId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
-    isDone: DataTypes.BOOLEAN
+    isDone: DataTypes.BOOLEAN,
+    isRated: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Course',

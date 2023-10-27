@@ -4,6 +4,10 @@ const bcrypt = require('bcryptjs')
 const { User } = require('../models')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 passport.use(new LocalStrategy(
   {
     usernameField: 'email',
