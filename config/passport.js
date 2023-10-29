@@ -8,7 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
-passport.use(new LocalStrategy(
+passport.use('user', new LocalStrategy(
   {
     usernameField: 'email',
     passwordField: 'password',
@@ -24,13 +24,34 @@ passport.use(new LocalStrategy(
           return cb(null, user)
         })
       })
+      .catch(err => cb(err, false))
+  }
+))
+
+passport.use('admin', new LocalStrategy(
+  {
+    usernameField: 'email',
+    passwordField: 'password',
+    passReqToCallback: true
+  },
+  (req, email, password, cb) => {
+    User.findOne({ where: { email, isAdmin: true } })
+      .then(user => {
+        if (!user) return cb(null, false, req.flash('error_msg', '這個帳號不存在!'))
+
+        bcrypt.compare(password, user.password).then(match => {
+          if (!match) return cb(null, false, req.flash('error_msg', '帳號或密碼輸入錯誤!'))
+          return cb(null, user)
+        })
+      })
+      .catch(err => cb(err, false))
   }
 ))
 
 passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: process.env.GOOGLE_CLIENT_CALLBACK,
+  clientID: `${process.env.GOOGLE_CLIENT_ID}`,
+  clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+  callbackURL: `${process.env.GOOGLE_CLIENT_CALLBACK}`,
   profileFields: ['email', 'displayName'],
   passReqToCallback: true
 },

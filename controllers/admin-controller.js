@@ -4,10 +4,15 @@ const adminController = {
   signInPage: (req, res, next) => {
     res.render('admin/admin-signin')
   },
+  signIn: (req, res, next) => {
+    req.flash('success_msg', '登入成功!')
+    res.redirect('/admin/users')
+  },
   getUsers: (req, res, next) => {
     Promise.all([
       User.findAll({
         raw: true,
+        where: { isAdmin: null },
         exclude: ['password']
       })
     ])

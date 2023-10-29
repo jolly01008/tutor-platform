@@ -20,9 +20,13 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     password: DataTypes.STRING,
     introduction: DataTypes.TEXT,
-    avatar: DataTypes.STRING,
+    avatar: {
+      type: DataTypes.STRING,
+      defaultValue: 'https://cdn-icons-png.flaticon.com/512/3171/3171065.png'
+    },
     isTeacher: DataTypes.BOOLEAN,
-    nation: DataTypes.STRING
+    nation: DataTypes.STRING,
+    isAdmin: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'User',

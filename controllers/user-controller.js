@@ -33,8 +33,7 @@ const userController = {
       .then(hash => User.create({
         name,
         email,
-        password: hash,
-        avatar: 'https://cdn-icons-png.flaticon.com/512/3171/3171065.png'
+        password: hash
       }))
       .then(() => {
         req.flash('success_msg', '成功註冊帳號，請重新登入')

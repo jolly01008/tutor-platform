@@ -1,22 +1,41 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary px-5 py-2 bg-dark" data-bs-theme="dark">
   <div class="container-fluid">
+    {{#if user.isAdmin}}
+    <a class="navbar-brand" href="/admin/users">
+      <h3><strong>Tutor</strong></h3>
+    </a>
+    {{else}}
     <a class="navbar-brand" href="/">
       <h3><strong>Tutor</strong></h3>
     </a>
+    {{/if}}
+    
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        {{#if user.isTeacher}}
-        <li class="nav-item">
-          <a class="nav-link active" href="/teacher/{{user.id}}">{{ user.name }}</a>
-        </li>
-        {{else}}
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/users/{{user.id}}">{{ user.name }}</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/users/{{user.id}}/apply">成為老師</a>
-        </li>
+        {{#if user}} {{!-- 登入後才顯示按鈕 --}}
+
+            {{#if user.isAdmin}}
+            <li class="nav-item">
+              <a class="nav-link active" href="/admin/users">Admin管理員 - {{ user.name }} </a>
+            </li>
+            {{else}}
+                {{#if user.isTeacher}}
+                <li class="nav-item">
+                  <a class="nav-link active" href="/teacher/{{user.id}}">Hi， {{ user.name }} 老師</a>
+                </li>
+                {{else}}
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/users/{{user.id}}">Hi，{{ user.name }} 同學</a>
+                </li>
+                &nbsp;&nbsp;
+                <li class="nav-item">
+                  <a class="btn btn-outline-warning" href="/users/{{user.id}}/apply">成為老師</a>
+                </li>
+                {{/if}}
+            {{/if}}
+
         {{/if}}
+        
 
       </ul>
     </div>
