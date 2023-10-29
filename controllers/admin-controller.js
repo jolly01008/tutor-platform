@@ -1,7 +1,10 @@
 const { User } = require('../models')
 
 const adminController = {
-  getUsers: (req, res) => {
+  signInPage: (req, res, next) => {
+    res.render('admin/admin-signin')
+  },
+  getUsers: (req, res, next) => {
     Promise.all([
       User.findAll({
         raw: true,
@@ -17,6 +20,7 @@ const adminController = {
         })
         res.render('admin/users', { users })
       })
+      .catch(err => next(err))
   },
   getSearchUsers: (req, res, next) => {
     const keyword = req.query.keyword.trim().toLowerCase()
