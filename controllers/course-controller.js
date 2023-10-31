@@ -1,6 +1,7 @@
 const { Teacher, User, Course, Score } = require('../models')
 const sequelize = require('sequelize')
 const dayjs = require('dayjs')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const CAN_BOOK_DAYS = 14
 const CLASS_TIME = {
@@ -10,11 +11,17 @@ const CLASS_TIME = {
 
 const courseController = {
   getTeachers: (req, res, next) => {
+    const DEFAULT_LIMIT = 6
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
     return Promise.all([
-      Teacher.findAll({
+      Teacher.findAndCountAll({
         raw: true,
         nest: true,
-        include: [User]
+        include: [User],
+        limit,
+        offset
       }),
       Course.findAll({
         raw: true,
@@ -26,19 +33,25 @@ const courseController = {
         include: [{
           model: User,
           attributes: ['name', 'avatar']
-        }]
+        }],
+        limit: 10
       })
     ])
       .then(([teachers, topLearnUsers]) => {
-        const teachersData = teachers.map(teacher => ({
+        const teachersData = teachers.rows.map(teacher => ({
           ...teacher, introduction: teacher.introduction.substring(0, 50)
         }))
-        return res.render('index', { teachers: teachersData, topLearnUsers })
+        return res.render('index', {
+          teachers: teachersData,
+          topLearnUsers,
+          pagination: getPagination(limit, page, teachers.count)
+        })
       })
       .catch(err => next(err))
   },
   getSearchTeachers: (req, res, next) => {
-    const keyword = req.query.keyword.trim()
+    const keyword = req.query.keyword.trim().toLowerCase()
+    if (!keyword) throw new Error('搜尋前，請先輸入關鍵字')
     return Promise.all([
       Teacher.findAll({
         raw: true,
