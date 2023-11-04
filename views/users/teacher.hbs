@@ -27,11 +27,19 @@
         {{teacher.style}}
       </p>
       <h5 class="mt-4"><strong>過去的課程評論</strong></h5>
-      {{#each score}}
-        <div class="d-flex flex-row">
-          <h5><span class="badge bg-danger me-2">{{this.rating}}</span></h5>
-          <p>{{this.comment}}</p>
-        </div>
+      <p><strong>▪ 最高的兩則評分 :</strong></p>
+      {{#each maxTwoScores}}
+      <div class="d-flex flex-row">
+        <h5><span class="badge bg-danger me-2">{{this.rating}}</span></h5>
+        <p>{{this.comment}}</p>
+      </div>
+      {{/each}}
+      <p><strong>▪ 最低的兩則評分 :</strong></p>
+      {{#each minTwoScores}}
+      <div class="d-flex flex-row">
+        <h5><span class="badge bg-danger me-2">{{this.rating}}</span></h5>
+        <p>{{this.comment}}</p>
+      </div>
       {{/each}}
 
     </div>

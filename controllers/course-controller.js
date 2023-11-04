@@ -109,9 +109,12 @@ const courseController = {
         where: { teacherId }
       })
     ])
-      .then(([teacher, score, avgScore, courses]) => {
+      .then(([teacher, scores, avgScore, courses]) => {
         // 平均分數
         const teacherAvgScore = avgScore[0].avgRating == null ? '目前沒有評分' : avgScore[0].avgRating.toFixed(1)
+        // 取出 兩個最高 與 兩個最低 的評分
+        const maxTwoScores = scores.sort((a, b) => b.rating - a.rating).slice(0, 2)
+        const minTwoScores = scores.sort((a, b) => a.rating - b.rating).slice(0, 2)
 
         // 顯示能預約的課程時間
         let availableWeekdays = teacher.appointmentWeek ? JSON.parse(teacher.appointmentWeek) : null
@@ -148,7 +151,7 @@ const courseController = {
         // 用availableTimes扣去bookedClassesTime，已經預約過的課程不用再顯示出來
         const availableTimesAfterBooked = availableTimes.filter(availableTime => !bookedCourseTime.includes(availableTime))
 
-        res.render('users/teacher', { teacher, score, teacherAvgScore, availableTimesAfterBooked })
+        res.render('users/teacher', { teacher, maxTwoScores, minTwoScores, teacherAvgScore, availableTimesAfterBooked })
       })
       .catch(err => next(err))
   },
