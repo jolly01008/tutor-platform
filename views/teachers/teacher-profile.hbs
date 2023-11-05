@@ -8,6 +8,7 @@
           style="width:18rem">
       </div>
       <h3 class="mt-3">{{teacher.name}}</h3>
+      <p class="mt-3">{{teacher.User.email}}</p>
       <div class="row">
         <h6 class="mt-2"><strong>平均評分:&nbsp;<span class="badge bg-danger">{{teacherAvgScore}}</span></strong></h6>
         <h6 class="mt-2"><strong>關於我:</strong></h6>
@@ -20,10 +21,13 @@
       <div class="row">
         {{#each futureCourses}}
         <div class="card mb-3 me-2" style="width:26rem">
-          <div class="card-body">
-              <p class="card-title">課程時間:&nbsp;{{this.courseTime}}</p>
+          <div class=" d-flex flex-row align-items-center">
+            <img src="{{this.User.avatar}}" alt="user-avatar" style="width:5rem ;height:5rem; border-radius:5rem; ">
+            <div class="card-body">
               <p class="card-title">學生名字:&nbsp;{{this.User.name}}</p>
+              <p class="card-title">課程時間:&nbsp;{{this.courseTime}}</p>
               <p class="card-title">課程連結:&nbsp;{{this.Teacher.courseLink}}</p>
+            </div>
           </div>
         </div>
         {{/each}}
@@ -35,6 +39,7 @@
           <div class="d-flex flex-cloumn">
             <h6 class="col-1"><span class="badge bg-danger">{{this.rating}}</span></h6>
             <p class="col">{{this.comment}}.</p>
+            <p class="col"><span class="badge bg-secondary">{{this.User.name}} 的評分</span></p>
           </div>
         {{/each}}
         <div class="row d-flex justify-content-end">

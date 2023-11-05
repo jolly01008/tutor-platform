@@ -5,6 +5,7 @@
       <img src="{{user.avatar}}" style=" width:15rem"
         class="img-thumbnail" alt="..." border>
       <h2 class="mt-3">{{user.name}}</h2>
+      <p class="mt-3">{{user.email}}</p>
       <h5 class="mt-4">{{user.nation}}</h5>
       <p class="">{{user.introduction}}</p>
       <a href="/users/{{user.id}}/edit" class="mt-4 mb-3 btn btn-primary" style="width: 10rem">編輯資料</a>
@@ -15,11 +16,16 @@
         <h5>新預約課程</h5>
         {{#each futureCourses}}
           <div class="card mb-3 mx-1 col-5" style="width:26rem">
-            <div class="card-body">
-              <p class="card-title"><strong>◾ 課程時間: </strong> {{this.courseTime}}</p>
-              <p class="card-title"><strong>◾ 老師名字: </strong>
-                <a href="/teachers/{{this.Teacher.id}}">{{this.Teacher.name}}</a></p>
-              <p class="card-title"><strong>◾ 課程連結: </strong>{{this.Teacher.courseLink}}</p>
+            <div class=" d-flex flex-row align-items-center">
+              <img src="{{this.Teacher.avatar}}" alt="teacher-avatar" 
+                style="width:5rem ;height:5rem; border-radius:5rem; ">
+              <div class="card-body">
+                <p class="card-title"><strong>◾ 課程時間: </strong> {{this.courseTime}}</p>
+                <p class="card-title"><strong>◾ 老師名字: </strong>
+                  <a href="/teachers/{{this.Teacher.id}}">{{this.Teacher.name}}</a>
+                </p>
+                <p class="card-title"><strong>◾ 課程連結: </strong>{{this.Teacher.courseLink}}</p>
+              </div>
             </div>
           </div>
         {{/each}}

@@ -29,13 +29,17 @@ const teacherController = {
         where: { teacherId: req.params.id },
         include: [
           { model: Teacher, attributes: ['courseLink'] },
-          { model: User, attributes: ['name'] }]
+          { model: User, attributes: ['name', 'avatar'] }]
       }),
       Score.findAll({
         raw: true,
         nest: true,
         where: { teacherId: req.params.id },
-        order: [['rating', 'DESC']]
+        order: [['rating', 'DESC']],
+        include: [{
+          model: User,
+          attributes: ['name']
+        }]
       })
     ])
       .then(([teacher, avgScore, courses, scores]) => {
