@@ -1,5 +1,6 @@
 const { Teacher, User, Course, Score } = require('../models')
 const sequelize = require('sequelize')
+const Op = require('sequelize').Op // Op允許查詢中使用各種操作符(等於、不等於、大於、小於)
 const dayjs = require('dayjs')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
@@ -15,6 +16,7 @@ const courseController = {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
+    const today = new Date()
     return Promise.all([
       Teacher.findAndCountAll({
         raw: true,
@@ -26,7 +28,7 @@ const courseController = {
       Course.findAll({
         raw: true,
         nest: true,
-        where: { isDone: true },
+        where: { courseTime: { [Op.lt]: today } },
         attributes: ['userId', [sequelize.fn('SUM', sequelize.col('during')), 'totalDuring']],
         group: ['userId'],
         order: [[sequelize.fn('SUM', sequelize.col('during')), 'DESC']],
@@ -50,6 +52,7 @@ const courseController = {
       .catch(err => next(err))
   },
   getSearchTeachers: (req, res, next) => {
+    const today = new Date()
     const keyword = req.query.keyword.trim().toLowerCase()
     if (!keyword) throw new Error('搜尋前，請先輸入關鍵字')
     return Promise.all([
@@ -60,7 +63,7 @@ const courseController = {
       Course.findAll({
         raw: true,
         nest: true,
-        where: { isDone: true },
+        where: { courseTime: { [Op.lt]: today } },
         attributes: ['userId', [sequelize.fn('SUM', sequelize.col('during')), 'totalDuring']],
         group: ['userId'],
         order: [[sequelize.fn('SUM', sequelize.col('during')), 'DESC']],

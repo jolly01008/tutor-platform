@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User, Teacher, Course } = require('../models')
 const sequelize = require('sequelize')
+const Op = require('sequelize').Op // Op允許查詢中使用各種操作符(等於、不等於、大於、小於)
 const dayjs = require('dayjs')
 const { myRank } = require('../helpers/rank-helpers')
 const { localFileHandler } = require('../helpers/file-helper')
@@ -42,6 +43,7 @@ const userController = {
       .catch(err => next(err))
   },
   getUser: (req, res) => {
+    const today = new Date()
     Promise.all([
       User.findByPk(req.user.id, {
         raw: true
@@ -55,10 +57,11 @@ const userController = {
           attributes: ['name', 'courseLink', 'avatar', 'id']
         }]
       }),
+      // 所有courseTime小於today的課程，during相加後命名total的值、做好排序
       Course.findAll({
         raw: true,
         nest: true,
-        where: { isDone: true },
+        where: { courseTime: { [Op.lt]: today } },
         include: [{ model: User, attributes: ['name', 'avatar'] }],
         attributes: [
           'userId',
@@ -80,6 +83,7 @@ const userController = {
           course.courseTime = dayjs(course.courseTime).format('YYYY/MM/DD HH:mm')
           return course
         })
+        // req.user.id與排好順序的allRanks陣列，丟進取出名次的工具
         const myRankData = myRank(req.user.id, allRanks)
         res.render('users/user-profile', { user, pastCourses, futureCourses, myRankData })
       })
