@@ -14,9 +14,20 @@ module.exports = {
       nation: 'Taiwan',
       created_at: new Date(),
       updated_at: new Date()
-    }])
+    }, {
+      name: 'user2',
+      email: 'user2@example.com',
+      password: hashedPassword,
+      introduction: 'I am user2',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/3171/3171065.png',
+      is_teacher: false,
+      nation: 'Taiwan',
+      created_at: new Date(),
+      updated_at: new Date()
+    }
+    ])
     await queryInterface.bulkInsert('Users',
-      Array.from({ length: 10 }).map(() => ({
+      Array.from({ length: 18 }).map(() => ({
         name: faker.name.findName(),
         email: faker.internet.email(),
         password: hashedPassword,
