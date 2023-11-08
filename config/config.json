@@ -20,6 +20,7 @@
     "database": "database_production",
     "host": "127.0.0.1",
     "dialect": "mysql",
+    "use_env_variable": "MYSQL_DATABASE_URL",
     "operatorsAliases": false
   }
 }
