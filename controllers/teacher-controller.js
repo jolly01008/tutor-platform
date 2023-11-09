@@ -1,7 +1,7 @@
 const { Teacher, User, Course, Score } = require('../models/')
 const sequelize = require('sequelize')
 const dayjs = require('dayjs')
-const { localFileHandler } = require('../helpers/file-helper')
+const { imgurFileHandler } = require('../helpers/file-helper')
 
 const teacherController = {
   getTeacherInfo: (req, res, next) => {
@@ -85,7 +85,7 @@ const teacherController = {
     const { file } = req // request中的檔案(圖片)取出來
     Promise.all([
       Teacher.findOne({ where: { userId } }),
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([teacher, filePath]) => {
         return teacher.update({

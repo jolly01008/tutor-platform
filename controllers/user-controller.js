@@ -4,7 +4,7 @@ const sequelize = require('sequelize')
 const Op = require('sequelize').Op // Op允許查詢中使用各種操作符(等於、不等於、大於、小於)
 const dayjs = require('dayjs')
 const { myRank } = require('../helpers/rank-helpers')
-const { localFileHandler } = require('../helpers/file-helper')
+const { imgurFileHandler } = require('../helpers/file-helper')
 
 const userController = {
   signInPage: (req, res) => {
@@ -111,7 +111,7 @@ const userController = {
     const { file } = req // request中的檔案(圖片)取出來
     Promise.all([
       User.findByPk(userId, { attributes: { exclude: ['password'] } }),
-      localFileHandler(file) // 取出的檔案傳給file-helper處理後
+      imgurFileHandler(file) // 取出的檔案傳給file-helper處理後
     ])
       .then(([user, filePath]) => {
         return user.update({
