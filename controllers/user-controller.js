@@ -11,8 +11,14 @@ const userController = {
     res.render('signin')
   },
   signIn: (req, res) => {
-    req.flash('success_msg', '登入成功!')
-    res.redirect('/teachers')
+    if (req.user.isAdmin === true) {
+      req.flash('error_msg', 'admin身分，請用Admin Sign In頁面登入')
+      req.logout() // 清除req.user，navbar上的admin相關按鈕才不會顯示
+      res.redirect('/admin/signin')
+    } else {
+      req.flash('success_msg', '登入成功!')
+      res.redirect('/teachers')
+    }
   },
   logout: (req, res) => {
     req.flash('success_msg', '登出成功!')

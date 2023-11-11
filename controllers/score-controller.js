@@ -19,6 +19,7 @@ const scoreController = {
       })
     ])
       .then(([course, ratedCourse]) => {
+        if (course[0].courseTime > new Date()) throw new Error('這個課程尚未開始，無法評分')
         if (!course) throw new Error('沒有這個課程')
         if (!rating || !comment) throw new Error('評分與評論都要填寫!')
         ratedCourse[0].update({ isRated: true })

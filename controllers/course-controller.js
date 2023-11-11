@@ -70,7 +70,8 @@ const courseController = {
         include: [{
           model: User,
           attributes: ['name', 'avatar']
-        }]
+        }],
+        limit: 10
       })
     ])
       .then(([teachers, topLearnUsers]) => {
@@ -177,6 +178,7 @@ const courseController = {
       })
     ])
       .then(([teacher, appointmentedCourse]) => {
+        if (teacher.isTeacher === 1) throw new Error('老師身分不能預約課程')
         if (appointmentedCourse) throw new Error('這個課程已經被預約過了!')
         if (userId === teacher.User.id) throw new Error('不能預約自己的課程')
         const during = teacher.during
