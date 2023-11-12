@@ -39,8 +39,10 @@
 
       </ul>
     </div>
-    <a href="/logout">
-      <button type="button" class="btn btn-outline-light">logout</button>
-    </a>
+    {{#if user}} {{!-- 登入後才顯示登出按鈕 --}}
+      <a href="/logout">
+        <button type="button" class="btn btn-outline-light">logout</button>
+      </a>
+    {{/if}}
   </div>
 </nav>

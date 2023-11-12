@@ -2,6 +2,18 @@
 <div class="container row">
   <form action="/teacher/{{user.id}}/edit?_method=PUT" method="POST" enctype="multipart/form-data">
     <div class="mb-3">
+      <label for="email" class="form-label">帳號&nbsp;</label>
+      <button class="mb-2 btn btn-outline-danger"  type="button" class="btn btn-primary" id="editEmailButton"
+        data-bs-toggle="modal" data-bs-target="#emailEdit">點此更改帳號</button>
+      <input name="email" class="form-control" id="email" placeholder="輸入帳號" type="email"
+        value="{{teacher.User.email}}" required readonly></input>
+    </div>
+    <div class="mb-3">
+      <label for="emailCheck" class="form-label">確認帳號</label>
+      <input name="emailCheck" class="form-control" id="emailCheck" placeholder="再次確認帳號" type="email"
+        value="{{teacher.User.email}}" required readonly></input>
+    </div>
+    <div class="mb-3">
       <label for="name" class="form-label">名字</label>
       <input name="name" class="form-control" id="name" value="{{teacher.name}}" required></input>
     </div>
@@ -80,3 +92,33 @@
   </form>
 
 </div>
+
+<!-- 更改信箱按鈕的Modal -->
+<div class="modal fade" id="emailEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>編輯帳號提醒</h4>
+      </div>
+      <div class="modal-body">
+        <p>更改帳號後，下次請用新的帳號進行登入!
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="modalCheckButton">我知道了</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const editEmailButton = document.getElementById('editEmailButton')
+  const email = document.getElementById('email')
+  const emailCheck = document.getElementById('emailCheck')
+  editEmailButton.addEventListener('click', function () {
+      //點擊編輯信箱按鈕後，將編輯email欄位的readonly屬性變成false。按鈕hide起來
+      email.readOnly = false;
+      emailCheck.readOnly = false;
+      editEmailButton.hidden = true;
+    })
+</script>

@@ -67,7 +67,11 @@ const teacherController = {
     Promise.all([
       Teacher.findOne({
         raw: true,
-        where: { userId }
+        nest: true,
+        where: { userId },
+        include: [{
+          model: User, attributes: ['email']
+        }]
       })
     ])
       .then(([teacher]) => {
@@ -78,16 +82,30 @@ const teacherController = {
   },
   putTeacher: (req, res, next) => {
     const userId = req.user.id
-    const { name, introduction, style, during, courseLink } = req.body
+    const { name, email, emailCheck, introduction, style, during, courseLink } = req.body
     const appointmentWeekString = req.body.appointmentWeek ? JSON.stringify(req.body.appointmentWeek) : null
     if (userId !== Number(req.params.id)) throw new Error('沒有權限!')
+    if (email !== emailCheck) throw new Error('「帳號」與「確認帳號」不相符!')
     if (!name || !introduction || !style || !during || !courseLink || !courseLink || !appointmentWeekString) throw new Error('請填寫所有欄位！')
     const { file } = req // request中的檔案(圖片)取出來
     Promise.all([
-      Teacher.findOne({ where: { userId } }),
+      Teacher.findOne({
+        where: { userId }
+      }),
       imgurFileHandler(file)
     ])
       .then(([teacher, filePath]) => {
+        const teacherUserId = teacher.userId
+        // 透過teachers資料表的userId，找出users資料表對應的使用者
+        Promise.all([
+          User.findOne({
+            where: { id: teacherUserId }
+          })
+        ])
+          .then(([user]) => {
+            // 並對該使用者更改帳號
+            return user.update({ email })
+          })
         return teacher.update({
           name,
           avatar: filePath || teacher.avatar,

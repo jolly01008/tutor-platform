@@ -1,4 +1,4 @@
-const { User } = require('../models')
+const { User, Teacher } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const adminController = {
@@ -17,15 +17,28 @@ const adminController = {
     Promise.all([
       User.findAndCountAll({
         raw: true,
-        newt: true,
+        nest: true,
         where: { isAdmin: null },
-        exclude: ['password'],
+        attributes: { exclude: ['password'] },
         limit,
         offset
+      }),
+      Teacher.findAll({
+        raw: true,
+        nest: true,
+        attributes: { exclude: ['password'] }
       })
     ])
-      .then(([users]) => {
+      .then(([users, teachers]) => {
         const usersInfos = users.rows.map(user => {
+          // 如果該位使用者是老師，從teachers資料表篩選出相對應的老師資料，並顯示該位老師姓名、介紹
+          if (user.isTeacher === 1) {
+            teachers.filter(teacher => { return teacher.userId === user.id })
+              .forEach(teacher => {
+                user.name = teacher.name
+                user.introduction = teacher.introduction || '(還沒填寫介紹)'
+              })
+          }
           return {
             ...user,
             introduction: user.introduction ? user.introduction.toLowerCase() : '(還沒填寫介紹)'
@@ -45,11 +58,23 @@ const adminController = {
       User.findAll({
         raw: true,
         nest: true,
-        exclude: ['password']
+        attributes: { exclude: ['password'] },
+      }),
+      Teacher.findAll({
+        raw: true,
+        nest: true,
+        attributes: { exclude: ['password'] }
       })
     ])
-      .then(([users]) => {
+      .then(([users, teachers]) => {
         const usersLowerCase = users.map(user => {
+          if (user.isTeacher === 1) {
+            teachers.filter(teacher => { return teacher.userId === user.id })
+              .forEach(teacher => {
+                user.name = teacher.name
+                user.introduction = teacher.introduction || '(還沒填寫介紹)'
+              })
+          }
           return {
             ...user,
             name: user.name.toLowerCase(),
