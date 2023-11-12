@@ -165,6 +165,7 @@ const courseController = {
     const userId = req.user.id
     if (!dayjs(appointmentTime).isValid()) throw new Error('請選擇想預約的日期！')
     return Promise.all([
+      User.findByPk(userId),
       Teacher.findByPk(teacherId, {
         raw: true,
         nest: true,
@@ -177,8 +178,8 @@ const courseController = {
         where: { courseTime: appointmentTime, teacherId }
       })
     ])
-      .then(([teacher, appointmentedCourse]) => {
-        if (teacher.isTeacher === 1) throw new Error('老師身分不能預約課程')
+      .then(([user, teacher, appointmentedCourse]) => {
+        if (user.isTeacher === true) throw new Error('老師身分不能預約課程')
         if (appointmentedCourse) throw new Error('這個課程已經被預約過了!')
         if (userId === teacher.User.id) throw new Error('不能預約自己的課程')
         const during = teacher.during
