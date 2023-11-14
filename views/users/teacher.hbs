@@ -68,6 +68,11 @@
 <div class="modal fade" id="appointmenteModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
+      {{#ifCond user.isTeacher true}}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5 mx-auto" id="ModalLabel">預約失敗!</h1>
+      </div>
+      {{else}}
       <div class="modal-header">
         <h1 class="modal-title fs-5 mx-auto" id="ModalLabel">預約成功!</h1>
       </div>
@@ -76,6 +81,7 @@
         <p>課程連結: {{teacher.courseLink}}</p>
         <p id="appointmentDateText"></p>
       </div>
+      {{/ifCond}}
       <div class="modal-footer">
          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeButton">關閉</button>
       </div>

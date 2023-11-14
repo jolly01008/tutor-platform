@@ -1,4 +1,4 @@
-# 我的餐廳清單
+# 英文媒合家教平台 tutor-platform
 
 ![image](https://github.com/jolly01008/tutor-platform/blob/main/public/readmeImage/image01.png)
 ![image](https://github.com/jolly01008/tutor-platform/blob/main/public/readmeImage/image02.png)
